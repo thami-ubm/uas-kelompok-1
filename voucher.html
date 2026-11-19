@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Voucher - katalogpromosi</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #ffffff;
+        --brand: #f7931e;
+        --brand-strong: #dc143c;
+        --muted: #8a8f98;
+        --text: #111827;
+        --glass: rgba(255, 255, 255, 0.6);
+        --radius: 14px;
+        --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+        --badge-red: #ff4d4f;
+        --success: #22c55e;
+        --max-w: 1100px;
+        --gap: 18px;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, var(--bg), #eef2f6 60%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        padding-bottom: 60px;
+      }
+
+      /* Container */
+      .wrap {
+        max-width: var(--max-w);
+        margin: 28px auto;
+        padding: 20px;
+        gap: var(--gap);
+        display: flex;
+        flex-direction: column;
+      }
+      /* HEADER */
+      .kp-header {
+        width: 100%;
+        background: linear-gradient(90deg, #fdb913, #f7931e, #dc143c);
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        padding: 10px 0;
+      }
+
+      /* NAVBAR */
+      .kp-nav {
+        max-width: 1280px;
+        margin: auto;
+        padding: 0 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* LOGO */
+      .kp-logo img {
+        height: 42px; /* ukuran ideal */
+        width: auto;
+        display: block;
+        object-fit: contain;
+      }
+
+      /* NAVIGATION LINKS */
+      .kp-links {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+        margin: 0 auto; /* <--- membuat links berada di tengah */
+      }
+
+      .kp-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 14px;
+        border-radius: 6px;
+        transition: 0.25s;
+      }
+
+      .kp-links a:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: #000;
+      }
+      /* BOOKMARK DI PALING KANAN */
+      .kp-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      /* Bookmark style */
+      .kp-bookmark {
+        font-size: 24px;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .kp-bookmark:hover {
+        transform: scale(1.2);
+      }
+      /* HAMBURGER BUTTON */
+      .kp-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .kp-hamburger span {
+        width: 26px;
+        height: 3px;
+        background: white;
+        border-radius: 3px;
+      }
+
+      /* SIDE DRAWER */
+      .kp-drawer {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100vh;
+        background: #fff;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        transition: 0.3s;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .kp-drawer a {
+        color: #333;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 17px;
+      }
+
+      .kp-close {
+        font-size: 26px;
+        background: none;
+        border: none;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+      /* Search + filter row */
+      .controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .search {
+        flex: 1;
+        min-width: 220px;
+        background: linear-gradient(180deg, #fff, #fbfdff);
+        border-radius: 999px;
+        padding: 10px 14px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        box-shadow: var(--shadow);
+      }
+      .search input {
+        border: 0;
+        background: transparent;
+        outline: none;
+        font-size: 15px;
+        width: 100%;
+      }
+      .chips {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .chip.active {
+        background: linear-gradient(90deg, var(--brand), var(--brand-strong));
+        color: #fff;
+        border: none;
+        box-shadow: 0 6px 18px rgba(247, 147, 30, 0.14);
+      }
+
+      /* Page Title */
+      .page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 6px;
+      }
+      .page-head h1 {
+        font-size: 20px;
+        margin: 0;
+        color: #0f1724;
+      }
+      .page-sub {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* Grid */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 24px;
+        margin-top: 12px;
+      }
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Left column: vouchers */
+      .v-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .voucher-card {
+        display: flex;
+        gap: 16px;
+        background: var(--card);
+        border-radius: var(--radius);
+        overflow: hidden;
+        align-items: stretch;
+        box-shadow: var(--shadow);
+        transition: transform 0.22s, box-shadow 0.22s;
+        padding: 14px;
+      }
+      .voucher-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 38px rgba(16, 24, 40, 0.12);
+      }
+      .v-media {
+        width: 160px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff, #fafafa);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .v-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 4px 6px;
+      }
+      .v-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .v-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0b1220;
+      }
+      .v-desc {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 6px;
+        line-height: 1.45;
+      }
+      .v-meta {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .meta-item {
+        font-size: 13px;
+        color: var(--muted);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .v-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .btn {
+        border: 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .btn-claim {
+        background: linear-gradient(90deg, var(--brand), var(--brand-strong));
+        color: white;
+        box-shadow: 0 8px 20px rgba(247, 147, 30, 0.18);
+      }
+      .btn-secondary {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        color: var(--text);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 6px 8px;
+        border-radius: 10px;
+        font-weight: 800;
+        font-size: 13px;
+        color: #fff;
+      }
+      .badge-discount {
+        background: linear-gradient(90deg, #ff7a59, #ff3b30);
+        box-shadow: 0 6px 18px rgba(255, 90, 70, 0.12);
+      }
+      .badge-limited {
+        background: #111827;
+        color: #fff;
+      }
+
+      /* Right column: sidebar */
+      .sidebar {
+        position: relative;
+      }
+      .panel {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: var(--shadow);
+      }
+      .filter-title {
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .filter-list label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* Popular vouchers */
+      .popular {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .pop-card {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 10px;
+        background: linear-gradient(180deg, #fff, #fbfbff);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+      }
+      .pop-thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pop-title {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .pop-meta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* Footer-ish see more */
+      .see-more {
+        display: flex;
+        justify-content: center;
+        margin-top: 12px;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px dashed rgba(0, 0, 0, 0.06);
+        padding: 12px 18px;
+        border-radius: 10px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      /* tiny utilities */
+      .muted {
+        color: var(--muted);
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.03);
+        font-size: 13px;
+      }
+
+      /* SVG placeholder styling inside media */
+      .brand-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* responsive */
+      @media (max-width: 700px) {
+        .kp-hamburger {
+          display: flex;
+        }
+
+        .kp-links {
+          display: none;
+        }
+        .v-media {
+          width: 120px;
+        }
+        .chips {
+          display: none;
+        }
+        .hamburger {
+          display: inline-flex;
+        }
+        header {
+          gap: 10px;
+        }
+      }
+
+      /* Snackbar */
+      .snackbar {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%) translateY(120%);
+        bottom: 20px;
+        background: #111827;
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 12px;
+        box-shadow: 0 12px 34px rgba(2, 6, 23, 0.32);
+        z-index: 999;
+        transition: transform 0.32s, opacity 0.32s;
+        opacity: 0;
+      }
+      .snackbar.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      /* Accessibility focus */
+      .chip:focus,
+      .btn:focus,
+      .bookmark:focus {
+        outline: 3px solid rgba(247, 147, 30, 0.18);
+        outline-offset: 4px;
+      }
+      footer {
+        background: linear-gradient(90deg, #ffd700, #ff4500);
+        padding: 50px 0 25px;
+        color: white;
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Container */
+      .footer-content {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        padding: 0 25px;
+      }
+
+      /* Footer Logo */
+      .footer-logo {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .footer-logo img {
+        width: 160px;
+        filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.35));
+      }
+
+      .footer-logo p {
+        color: #fff;
+        letter-spacing: 1px;
+        font-weight: 500;
+      }
+
+      /* Section */
+      .footer-section h3 {
+        margin-bottom: 14px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .footer-section p {
+        margin: 0;
+        line-height: 1.6;
+        color: #fff;
+        opacity: 0.9;
+      }
+
+      /* ICON SOCIAL MEDIA */
+      .social-icons {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .social-icon {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .social-icon:hover {
+        background: white;
+        color: #ff4500;
+        transform: translateY(-4px);
+      }
+
+      .social-icon img {
+        width: 24px;
+      }
+
+      /* COPYRIGHT */
+      .copyright {
+        text-align: center;
+      }
+
+      footer .copyright {
+        margin-top: 35px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+        opacity: 0.95;
+      }
+
+      footer .copyright p {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0.4px;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .footer-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .social-icons {
+          justify-content: center;
+        }
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 25px;
+        border-top: 2px solid #bbb;
+        font-size: 14px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="kp-header">
+      <nav class="kp-nav">
+        <!-- LOGO -->
+        <div class="kp-logo">
+          <img src="kp.logo.png" alt="KatalogPromosi" />
+        </div>
+
+        <!-- NAVIGATION LINKS (TENGAH) -->
+        <ul class="kp-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="promo.html">Hot Promo</a></li>
+          <li><a href="kategori.html">Kategori</a></li>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="event.html">Event</a></li>
+          <li><a href="voucher.html" class="active">Voucher</a></li>
+        </ul>
+
+        <!-- BOOKMARK + HAMBURGER (KANAN) -->
+        <div class="kp-right">
+          <div class="kp-bookmark">📖</div>
+
+          <button class="kp-hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- DRAWER MENU -->
+      <div class="kp-drawer" id="drawerMenu">
+        <button class="kp-close" id="closeDrawer">✕</button>
+        <a href="index.html">Home</a>
+        <a href="promo.html">Hot Promo</a>
+        <a href="kategori.html">Kategori</a>
+        <a href="katalog.html">Katalog</a>
+        <a href="event.html">Event</a>
+        <a href="voucher.html">Voucher</a>
+      </div>
+    </header>
+    <div class="wrap" role="main">
+      <!-- controls -->
+      <div class="controls" aria-hidden="false">
+        <div class="search" role="search">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 21l-4.35-4.35"
+              stroke="#9aa3ad"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="11" cy="11" r="6" stroke="#9aa3ad" stroke-width="1.6" />
+          </svg>
+          <input
+            id="search"
+            placeholder="Cari voucher, brand atau kategori (mis. Alfamart, Indomaret)"
+          />
+        </div>
+
+        <div class="chips" role="list">
+          <button class="chip active" data-filter="all">Semua</button>
+          <button class="chip" data-filter="supermarket">Supermarket</button>
+          <button class="chip" data-filter="food">Food & Beverage</button>
+          <button class="chip" data-filter="cashback">Cashback</button>
+          <button class="chip" data-filter="digital">Digital</button>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <h1>Voucher Hari Ini</h1>
+        <div class="page-sub">
+          Menampilkan voucher populer dan terbaru — klaim sebelum habis.
+        </div>
+      </div>
+
+      <div class="grid" aria-live="polite">
+        <!-- LEFT: Voucher list -->
+        <div>
+          <div class="v-list" id="voucherList">
+            <!-- Voucher 1 - Alfamart -->
+            <article
+              class="voucher-card"
+              data-category="supermarket"
+              aria-labelledby="v1-title"
+            >
+              <div class="v-media" aria-hidden="true">
+                <!-- SVG placeholder showing brand -->
+                <svg
+                  class="brand-svg"
+                  viewBox="0 0 400 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Alfamart promo"
+                >
+                  <defs>
+                    <linearGradient id="g1" x1="0" x2="1">
+                      <stop offset="0" stop-color="#fbc02d" />
+                      <stop offset="1" stop-color="#f57c00" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="100%" rx="12" fill="url(#g1)" />
+                  <text
+                    x="50%"
+                    y="46%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-weight="800"
+                    font-size="32"
+                    fill="#fff"
+                  >
+                    ALFAMART
+                  </text>
+                  <text
+                    x="50%"
+                    y="66%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-size="14"
+                    fill="#fff"
+                  >
+                    JSM Super Hemat - Up to 50%
+                  </text>
+                </svg>
+              </div>
+              <div class="v-body">
+                <div>
+                  <div class="v-head">
+                    <div>
+                      <div id="v1-title" class="v-title">
+                        Voucher Alfamart - Diskon Rp20.000
+                      </div>
+                      <div class="v-desc">
+                        Tukar voucher untuk belanja minimal Rp100.000. Berlaku
+                        di outlet Alfamart seluruh Indonesia dan Tokopedia
+                        Alfamart.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-meta">
+                    <span class="meta-item"
+                      ><span class="pill">Min. Rp100.000</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Sisa: 120</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill"
+                        >Berlaku hingga 15 Des 2025</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div class="v-actions" aria-hidden="false">
+                  <div>
+                    <span class="badge badge-discount">-50%</span>
+                    <span style="margin-left: 8px" class="small muted"
+                      >Populer</span
+                    >
+                  </div>
+                  <div style="margin-left: auto; display: flex; gap: 8px">
+                    <button
+                      class="btn btn-secondary"
+                      aria-label="Detail voucher"
+                    >
+                      Lihat Detail
+                    </button>
+                    <button
+                      class="btn btn-claim"
+                      data-title="Voucher Alfamart - Diskon Rp20.000"
+                    >
+                      Gunakan Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Voucher 2 - Indomaret -->
+            <article
+              class="voucher-card"
+              data-category="supermarket"
+              aria-labelledby="v2-title"
+            >
+              <div class="v-media">
+                <svg
+                  class="brand-svg"
+                  viewBox="0 0 400 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Indomaret promo"
+                >
+                  <rect width="100%" height="100%" rx="12" fill="#ffefdb" />
+                  <text
+                    x="50%"
+                    y="44%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-weight="800"
+                    font-size="30"
+                    fill="#d7263d"
+                  >
+                    INDOMARET
+                  </text>
+                  <text
+                    x="50%"
+                    y="66%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-size="13"
+                    fill="#333"
+                  >
+                    Serba Rp12.000 - Pilihan Retail
+                  </text>
+                </svg>
+              </div>
+              <div class="v-body">
+                <div>
+                  <div id="v2-title" class="v-title">
+                    Voucher Indomaret - Serba Rp12.000
+                  </div>
+                  <div class="v-desc">
+                    Nikmati produk kebutuhan rumah & snack serba Rp12.000 dengan
+                    menukarkan voucher ini, berlaku khusus promo 12.12.
+                  </div>
+                  <div class="v-meta">
+                    <span class="meta-item"
+                      ><span class="pill">Min. Rp0</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Sisa: 480</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Berlaku 12-14 Des 2025</span></span
+                    >
+                  </div>
+                </div>
+                <div class="v-actions">
+                  <div>
+                    <span class="badge badge-limited">Limited</span>
+                  </div>
+                  <div style="margin-left: auto; display: flex; gap: 8px">
+                    <button class="btn btn-secondary">Lihat Detail</button>
+                    <button
+                      class="btn btn-claim"
+                      data-title="Voucher Indomaret - Serba Rp12.000"
+                    >
+                      Gunakan Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Voucher 3 - Superindo -->
+            <article
+              class="voucher-card"
+              data-category="supermarket"
+              aria-labelledby="v3-title"
+            >
+              <div class="v-media">
+                <svg
+                  class="brand-svg"
+                  viewBox="0 0 400 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Superindo promo"
+                >
+                  <rect width="100%" height="100%" rx="12" fill="#e8f6ff" />
+                  <text
+                    x="50%"
+                    y="44%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-weight="800"
+                    font-size="30"
+                    fill="#0066b3"
+                  >
+                    SUPERINDO
+                  </text>
+                  <text
+                    x="50%"
+                    y="66%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-size="13"
+                    fill="#0b2b45"
+                  >
+                    Cashback 20% + Tebus Murah
+                  </text>
+                </svg>
+              </div>
+              <div class="v-body">
+                <div>
+                  <div id="v3-title" class="v-title">
+                    Voucher Superindo - Cashback 20%
+                  </div>
+                  <div class="v-desc">
+                    Dapatkan cashback sampai 20% untuk pembelian tertentu dan
+                    promo tebus murah produk unggulan.
+                  </div>
+                  <div class="v-meta">
+                    <span class="meta-item"
+                      ><span class="pill">Max Cashback Rp50.000</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Sisa: 230</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Berlaku 10-14 Des 2025</span></span
+                    >
+                  </div>
+                </div>
+                <div class="v-actions">
+                  <div>
+                    <span class="badge badge-discount">CASHBACK</span>
+                  </div>
+                  <div style="margin-left: auto; display: flex; gap: 8px">
+                    <button class="btn btn-secondary">Lihat Detail</button>
+                    <button
+                      class="btn btn-claim"
+                      data-title="Voucher Superindo - Cashback 20%"
+                    >
+                      Gunakan Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- More sample vouchers (Food / Digital) -->
+            <article
+              class="voucher-card"
+              data-category="food"
+              aria-labelledby="v4-title"
+            >
+              <div class="v-media">
+                <svg
+                  class="brand-svg"
+                  viewBox="0 0 400 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="100%" height="100%" rx="12" fill="#fff0f6" />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-weight="700"
+                    font-size="22"
+                    fill="#c81d4d"
+                  >
+                    FOOD DEAL
+                  </text>
+                </svg>
+              </div>
+              <div class="v-body">
+                <div>
+                  <div id="v4-title" class="v-title">
+                    Diskon Food Delivery 30%
+                  </div>
+                  <div class="v-desc">
+                    Diskon 30% untuk pesanan minimum Rp50.000 via platform
+                    tertentu (GrabFood / GoFood).
+                  </div>
+                  <div class="v-meta">
+                    <span class="meta-item"
+                      ><span class="pill">Min. Rp50.000</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Sisa: 60</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Berlaku 12 Des 2025</span></span
+                    >
+                  </div>
+                </div>
+                <div class="v-actions">
+                  <div><span class="badge badge-discount">-30%</span></div>
+                  <div style="margin-left: auto; display: flex; gap: 8px">
+                    <button class="btn btn-secondary">Lihat Detail</button>
+                    <button
+                      class="btn btn-claim"
+                      data-title="Diskon Food Delivery 30%"
+                    >
+                      Gunakan Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article
+              class="voucher-card"
+              data-category="digital"
+              aria-labelledby="v5-title"
+            >
+              <div class="v-media">
+                <svg
+                  class="brand-svg"
+                  viewBox="0 0 400 280"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="100%" height="100%" rx="12" fill="#EBF8FF" />
+                  <text
+                    x="50%"
+                    y="50%"
+                    dominant-baseline="middle"
+                    text-anchor="middle"
+                    font-family="sans-serif"
+                    font-weight="700"
+                    font-size="22"
+                    fill="#0369a1"
+                  >
+                    Digital
+                  </text>
+                </svg>
+              </div>
+              <div class="v-body">
+                <div>
+                  <div id="v5-title" class="v-title">
+                    Voucher Pulsa - Diskon 10%
+                  </div>
+                  <div class="v-desc">
+                    Potongan 10% untuk pembelian pulsa & paket data melalui
+                    e-wallet mitra.
+                  </div>
+                  <div class="v-meta">
+                    <span class="meta-item"
+                      ><span class="pill">Min. Rp20.000</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill">Sisa: 999+</span></span
+                    >
+                    <span class="meta-item"
+                      ><span class="pill"
+                        >Berlaku hingga 31 Des 2025</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div class="v-actions">
+                  <div><span class="badge badge-discount">-10%</span></div>
+                  <div style="margin-left: auto; display: flex; gap: 8px">
+                    <button class="btn btn-secondary">Lihat Detail</button>
+                    <button
+                      class="btn btn-claim"
+                      data-title="Voucher Pulsa - Diskon 10%"
+                    >
+                      Gunakan Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="see-more" role="region" aria-label="see more">
+            <button class="btn-outline" id="loadMore">
+              Lihat Lebih Banyak Voucher
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Sidebar -->
+        <aside class="sidebar" aria-label="sidebar">
+          <div class="panel" role="region" aria-labelledby="filterTitle">
+            <div id="filterTitle" class="filter-title">Filter</div>
+            <div class="small muted">
+              Pilih kategori atau filter untuk mempersempit hasil
+            </div>
+            <div style="height: 12px"></div>
+            <div class="filter-list">
+              <label
+                ><input
+                  type="checkbox"
+                  name="cat"
+                  value="supermarket"
+                  checked
+                />
+                Supermarket</label
+              >
+              <label
+                ><input type="checkbox" name="cat" value="food" checked /> Food
+                & Beverage</label
+              >
+              <label
+                ><input type="checkbox" name="cat" value="digital" checked />
+                Digital</label
+              >
+              <label
+                ><input type="checkbox" name="cat" value="cashback" checked />
+                Cashback</label
+              >
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top: 16px">
+            <div class="filter-title">Voucher Populer</div>
+            <div class="small muted">
+              Voucher yang sering diklaim minggu ini
+            </div>
+            <div class="popular" aria-hidden="false">
+              <div class="pop-card">
+                <div
+                  class="pop-thumb"
+                  style="
+                    background: linear-gradient(90deg, #ff7a59, #ff3b30);
+                    color: white;
+                    font-weight: 700;
+                    border-radius: 8px;
+                  "
+                >
+                  ALF
+                </div>
+                <div>
+                  <div class="pop-title">Alfamart - Diskon Rp20k</div>
+                  <div class="pop-meta">Sisa: 120 • Supermarket</div>
+                </div>
+              </div>
+
+              <div class="pop-card">
+                <div
+                  class="pop-thumb"
+                  style="
+                    background: linear-gradient(90deg, #2dd4bf, #06b6d4);
+                    color: white;
+                    font-weight: 700;
+                    border-radius: 8px;
+                  "
+                >
+                  IND
+                </div>
+                <div>
+                  <div class="pop-title">Indomaret - Serba Rp12k</div>
+                  <div class="pop-meta">Sisa: 480 • Supermarket</div>
+                </div>
+              </div>
+
+              <div class="pop-card">
+                <div
+                  class="pop-thumb"
+                  style="
+                    background: linear-gradient(90deg, #93c5fd, #3b82f6);
+                    color: white;
+                    font-weight: 700;
+                    border-radius: 8px;
+                  "
+                >
+                  SUP
+                </div>
+                <div>
+                  <div class="pop-title">Superindo - Cashback 20%</div>
+                  <div class="pop-meta">Sisa: 230 • Supermarket</div>
+                </div>
+              </div>
+
+              <div class="pop-card">
+                <div
+                  class="pop-thumb"
+                  style="
+                    background: linear-gradient(90deg, #fbcfe8, #f472b6);
+                    color: white;
+                    font-weight: 700;
+                    border-radius: 8px;
+                  "
+                >
+                  FOOD
+                </div>
+                <div>
+                  <div class="pop-title">Food - Diskon 30%</div>
+                  <div class="pop-meta">Sisa: 60 • Food & Beverage</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Snackbar -->
+    <div id="snackbar" class="snackbar" role="status" aria-live="polite"></div>
+    <footer>
+      <div class="footer-logo">
+        <h2><img src="kp.logo.png" width="150" /></h2>
+        <p>DISKON | SALE | KATALOG BELANJA</p>
+      </div>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Alamat</h3>
+          <p>
+            Gedung WTC Mangga Dua Lt. 1<br />Blok C. 85-87, Jakarta Utara<br /><br />Telp:
+            +6287888768128 (WA Only)
+          </p>
+        </div>
+        <div class="footer-section">
+          <h3>Social Media</h3>
+          <div class="social-icons">
+            <div class="social-icon">f</div>
+            <div class="social-icon">𝕏</div>
+            <div class="social-icon">in</div>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h3>Tentang Katalogpromosi.</h3>
+          <p>
+            Katalogpromosi.com adalah sebuah situs web yang bertujuan untuk
+            memberikan informasi promosi terpadu khusus kalian para pecinta
+            Diskon di Indonesia
+          </p>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>katalogpromosi.com copyright © 2025</p>
+      </div>
+    </footer>
+    <script>
+      const drawer = document.getElementById("drawerMenu");
+      const openBtn = document.getElementById("hamburgerBtn");
+      const closeBtn = document.getElementById("closeDrawer");
+
+      openBtn.onclick = () => (drawer.style.left = "0");
+      closeBtn.onclick = () => (drawer.style.left = "-260px");
+      // chip filtering
+      const chips = document.querySelectorAll(".chip");
+      const vouchers = document.querySelectorAll(".voucher-card");
+      const searchInput = document.getElementById("search");
+
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          chips.forEach((c) => c.classList.remove("active"));
+          chip.classList.add("active");
+          const filter = chip.dataset.filter;
+          applyFilters();
+        });
+      });
+
+      // simple filter by category & search
+      function applyFilters() {
+        const active =
+          document.querySelector(".chip.active")?.dataset.filter || "all";
+        const q = searchInput.value.toLowerCase().trim();
+        vouchers.forEach((v) => {
+          const cat = v.dataset.category || "";
+          const title = v.querySelector(".v-title").textContent.toLowerCase();
+          const desc = v.querySelector(".v-desc").textContent.toLowerCase();
+          const matchCat = active === "all" || cat === active;
+          const matchText = q === "" || title.includes(q) || desc.includes(q);
+          v.style.display = matchCat && matchText ? "flex" : "none";
+        });
+      }
+
+      searchInput.addEventListener("input", applyFilters);
+
+      // claim voucher action -> show snackbar
+      document.querySelectorAll(".btn-claim").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const title = btn.dataset.title || "Voucher diklaim";
+          showSnackbar("Berhasil klaim — " + title);
+        });
+      });
+
+      function showSnackbar(text) {
+        const s = document.getElementById("snackbar");
+        s.textContent = text;
+        s.classList.add("show");
+        setTimeout(() => s.classList.remove("show"), 3200);
+      }
+
+      // load more (demo)
+      document.getElementById("loadMore").addEventListener("click", () => {
+        showSnackbar("Memuat lebih banyak voucher (demo)");
+      });
+
+      // basic responsive behaviour: hide chips on small
+      function responsiveInit() {
+        if (window.innerWidth < 700) {
+          document
+            .querySelectorAll(".chip")
+            .forEach((c) => (c.style.display = "none"));
+          document.querySelector(".hamburger").style.display = "inline-flex";
+        } else {
+          document
+            .querySelectorAll(".chip")
+            .forEach((c) => (c.style.display = "inline-flex"));
+          document.querySelector(".hamburger").style.display = "none";
+        }
+      }
+      window.addEventListener("resize", responsiveInit);
+      responsiveInit();
+
+      // keyboard accessibility: enter on chips triggers click
+      document.querySelectorAll(".chip").forEach((chip) => {
+        chip.setAttribute("tabindex", "0");
+        chip.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") chip.click();
+        });
+      });
+    </script>
+  </body>
+</html>
